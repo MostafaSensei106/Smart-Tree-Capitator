@@ -1,6 +1,7 @@
 package com.mostafa.sensei
 
 import net.fabricmc.api.ModInitializer
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents
 import net.minecraft.core.BlockPos
 import net.minecraft.resources.Identifier
@@ -15,55 +16,77 @@ import net.minecraft.world.level.block.Block
 object SmartTreeCapitator : ModInitializer {
     const val MOD_ID: String = "smart-tree-capitator"
     const val MAX_WOOD_LOGS = 64
+    private const val TICKS_PER_LOG = 8
+    private val pendingTrees = mutableListOf<FellingTask>()
 
     override fun onInitialize() {
         PlayerBlockBreakEvents.AFTER.register { world, player, pos, state, _ ->
-            if (world.isClientSide) return@register
+            if (world.isClientSide || player.isCrouching) return@register
 
             val heldItem = player.mainHandItem
             if (!state.`is`(BlockTags.LOGS) { true } ||
                 !heldItem.`is` { it.`is`(ItemTags.AXES) }
             ) return@register
 
-            fellTree(world, player, pos, state.block, heldItem)
+            pendingTrees.add(FellingTask(world, player, pos, state.block, heldItem))
         }
+
+        ServerTickEvents.END_SERVER_TICK.register { pendingTrees.removeAll { !it.tick() } }
     }
 
-    private fun fellTree(
-        world: Level,
-        player: Player,
+    private class FellingTask(
+        private val world: Level,
+        private val player: Player,
         startPos: BlockPos,
-        log: Block,
-        axe: ItemStack
+        private val log: Block,
+        private val axe: ItemStack
     ) {
-        val visited = hashSetOf(startPos)
-        val queue = ArrayDeque<BlockPos>()
-        queue.addLast(startPos)
-        var brokenLogs = 0
+        private val visited = hashSetOf(startPos)
+        private val queue = ArrayDeque<BlockPos>()
+        private var brokenLogs = 0
+        private var ticksUntilNext = TICKS_PER_LOG
 
-        while (queue.isNotEmpty()) {
-            val current = queue.removeFirst()
-            for (neighbor in current.upperNeighbors()) {
-                if (!visited.add(neighbor)) continue
-                if (world.getBlockState(neighbor).block != log) continue
-                if (!player.isCreative && axe.isDamageableItem && axe.nextDamageWillBreak()) return
+        init {
+            enqueueNeighbors(startPos)
+        }
 
-                if (world.destroyBlock(neighbor, true, player, 512)) {
+        fun tick(): Boolean {
+            if (player.isRemoved || !player.isAlive || player.level() !== world ||
+                player.isShiftKeyDown || player.mainHandItem !== axe || axe.isEmpty
+            ) return false
+
+            if (--ticksUntilNext > 0) return true
+
+            while (queue.isNotEmpty()) {
+                val next = queue.removeFirst()
+                if (world.getBlockState(next).block != log) continue
+                if (!player.isCreative && axe.isDamageableItem && axe.nextDamageWillBreak()) return false
+
+                if (world.destroyBlock(next, true, player, 512)) {
                     brokenLogs++
-                    queue.addLast(neighbor)
                     if (!player.isCreative) axe.hurtAndBreak(1, player, EquipmentSlot.MAINHAND)
-                    if (brokenLogs >= MAX_WOOD_LOGS) return
+                    if (brokenLogs >= MAX_WOOD_LOGS) return false
+
+                    enqueueNeighbors(next)
+                    ticksUntilNext = TICKS_PER_LOG
+                    return queue.isNotEmpty()
+                }
+            }
+
+            return false
+        }
+
+        private fun enqueueNeighbors(pos: BlockPos) {
+            for (dx in -1..1) {
+                for (dy in 0..1) {
+                    for (dz in -1..1) {
+                        val neighbor = pos.offset(dx, dy, dz)
+                        if (visited.add(neighbor)) queue.addLast(neighbor)
+                    }
                 }
             }
         }
     }
-
-    private fun BlockPos.upperNeighbors(): Sequence<BlockPos> =
-        (-1..1).asSequence().flatMap { dx ->
-            (0..1).asSequence().flatMap { dy ->
-                (-1..1).asSequence().map { dz -> offset(dx, dy, dz) }
-            }
-        }.filter { it != this }
 
     fun id(path: String): Identifier = Identifier.fromNamespaceAndPath(MOD_ID, path)
 }

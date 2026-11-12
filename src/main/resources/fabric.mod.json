@@ -3,15 +3,15 @@
 	"id": "smart-tree-capitator",
 	"version": "${version}",
 	"name": "Smart Tree Capitator",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Fells entire trees at once when breaking the base log with an axe, consuming durability per log and respecting sneaking.",
 	"authors": [
-		"Me!"
+		"Mostafa Sensei"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/MostafaSensei106/smart-tree-capitator",
+		"sources": "https://github.com/MostafaSensei106/smart-tree-capitator"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/smart-tree-capitator/icon.png",
 	"environment": "*",
 	"entrypoints": {
@@ -20,26 +20,10 @@
 				"value": "com.mostafa.sensei.SmartTreeCapitator",
 				"adapter": "kotlin"
 			}
-		],
-		"client": [
-			{
-				"value": "com.mostafa.sensei.client.SmartTreeCapitatorClient",
-				"adapter": "kotlin"
-			}
-		],
-		"fabric-datagen": [
-			{
-				"value": "com.mostafa.sensei.client.SmartTreeCapitatorDataGenerator",
-				"adapter": "kotlin"
-			}
 		]
 	},
 	"mixins": [
-		"smart-tree-capitator.mixins.json",
-		{
-			"config": "smart-tree-capitator.client.mixins.json",
-			"environment": "client"
-		}
+		"smart-tree-capitator.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.20.1",
