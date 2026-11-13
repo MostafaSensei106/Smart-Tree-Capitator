@@ -3,7 +3,7 @@
 	"id": "smart-tree-capitator",
 	"version": "${version}",
 	"name": "Smart Tree Capitator",
-	"description": "Fells entire trees at once when breaking the base log with an axe, consuming durability per log and respecting sneaking.",
+	"description": "Safely fells natural trees in a three-log-per-tick cascade, gathers drops, replants saplings, and offers configurable controls.",
 	"authors": [
 		"Mostafa Sensei"
 	],
@@ -15,6 +15,12 @@
 	"icon": "assets/smart-tree-capitator/icon.png",
 	"environment": "*",
 	"entrypoints": {
+		"modmenu": [
+			{
+				"value": "com.mostafa.sensei.client.config.TreeConfigScreen",
+				"adapter": "kotlin"
+			}
+		],
 		"main": [
 			{
 				"value": "com.mostafa.sensei.SmartTreeCapitator",
@@ -30,6 +36,10 @@
 		"minecraft": "~26.2",
 		"java": ">=25",
 		"fabric-api": "*",
-		"fabric-language-kotlin": "*"
+		"fabric-language-kotlin": "*",
+		"yet_another_config_lib_v3": "*"
+	},
+	"recommends": {
+		"modmenu": "*"
 	}
 }
