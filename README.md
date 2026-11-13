@@ -62,7 +62,7 @@ Tree detection is a safety heuristic, not a guarantee for every player-built str
 
 ### Requirements
 
-| Required | Version |
+| Component | Version |
 | --- | --- |
 | Minecraft Java Edition | **26.2** |
 | [Fabric Loader](https://fabricmc.net/use/installer/) | **0.20.1+** (select Minecraft 26.2) |
@@ -70,17 +70,18 @@ Tree detection is a safety heuristic, not a guarantee for every player-built str
 | [Fabric API](https://modrinth.com/mod/fabric-api/version/ewUK83HI) | **0.161.0+26.2** (Fabric) |
 | [Fabric Language Kotlin](https://modrinth.com/mod/fabric-language-kotlin/version/SKW1BTL3) | **1.14.2+kotlin.2.4.21** (Fabric) |
 | [YetAnotherConfigLib (YACL)](https://modrinth.com/mod/yacl/version/3.9.7%2B26.2-fabric) | **3.9.7+26.2-fabric** |
+| [Mod Menu](https://modrinth.com/mod/modmenu/version/iRo7AZXf) | **20.0.3** (Fabric 26.2; optional extra way to open Config) |
 
 1. Install Minecraft **26.2** with Fabric Loader **0.20.1 or newer**, then select that Fabric profile in your launcher.
-2. Download the three required Fabric jars from the exact version links above. Put all three in the Fabric 26.2 instance's `mods` folder. To open the Config screen in game, also install [Mod Menu 20.0.3 for 26.2](https://modrinth.com/mod/modmenu/version/iRo7AZXf) (optional).
+2. Download Fabric API, Fabric Language Kotlin, and YACL from the exact version links above. Put all three Fabric jars in the Fabric 26.2 instance's `mods` folder. Mod Menu is optional.
 3. Get the Smart Tree Capitator jar from [GitHub Releases](https://github.com/MostafaSensei106/Smart-Tree-Capitator/releases) **if one has been published**, or [build the jar yourself](#-build-from-source).
 4. Put that jar in the same `mods` folder and start Minecraft.
 
-The built Smart Tree Capitator jar does not contain Fabric API, Fabric Language Kotlin, or YACL. Gradle downloads them for development only. If Fabric reports that one is missing, check the `mods` folder of the **instance you actually launched**, not another Minecraft installation.
+The built Smart Tree Capitator jar does not contain Fabric API, Fabric Language Kotlin, YACL, or Mod Menu. Gradle downloads them for development only. If Fabric reports that one is missing, check the `mods` folder of the **instance you actually launched**, not another Minecraft installation.
 
 For single-player, install the mod in your game instance. For multiplayer, install it and its dependencies on the server, which runs the felling logic.
 
-Open **Mod Menu → Smart Tree Capitator → Config** to set the maximum log count and Shift behavior. Settings are saved in `config/smart-tree-capitator.json`. On dedicated servers, edit that file on the server and restart it; a client's Config screen does not change server settings.
+Click **Tree Config** at the top right of Minecraft's main menu or pause menu to set the maximum log count and Shift behavior. With Mod Menu installed, **Mods → Smart Tree Capitator → Config** also opens the same screen. Settings are saved in `config/smart-tree-capitator.json`. On dedicated servers, edit that file on the server and restart it; a client's Config screen does not change server settings.
 
 <details>
 <summary><strong>📁 Where is the mods folder?</strong></summary>

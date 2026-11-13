@@ -26,6 +26,12 @@
 				"value": "com.mostafa.sensei.SmartTreeCapitator",
 				"adapter": "kotlin"
 			}
+		],
+		"client": [
+			{
+				"value": "com.mostafa.sensei.client.SmartTreeCapitatorClient",
+				"adapter": "kotlin"
+			}
 		]
 	},
 	"mixins": [
